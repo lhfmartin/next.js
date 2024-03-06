@@ -72,9 +72,6 @@ export function getOrCreatePrefetchCacheEntry({
   if (existingCacheEntry) {
     // Grab the latest status of the cache entry and update it
     existingCacheEntry.status = getPrefetchEntryCacheStatus(existingCacheEntry)
-    existingCacheEntry.loadingStatus = getLoadingCacheStatus(
-      existingCacheEntry.renewalTime
-    )
 
     // when `kind` is provided, an explicit prefetch was requested.
     // if the requested prefetch is "full" and the current cache entry wasn't, we want to re-prefetch with the new intent
@@ -94,7 +91,6 @@ export function getOrCreatePrefetchCacheEntry({
         buildId,
         nextUrl,
         prefetchCache,
-        isRenewal: true,
         // If we didn't get an explicit prefetch kind, we want to set a temporary kind
         // rather than assuming the same intent as the previous entry, to be consistent with how we
         // lazily create prefetch entries when intent is left unspecified.
@@ -178,10 +174,8 @@ export function createPrefetchCacheEntryForInitialLoad({
     kind,
     prefetchTime: Date.now(),
     lastUsedTime: null,
-    renewalTime: null,
     key: prefetchCacheKey,
     status: PrefetchCacheEntryStatus.fresh,
-    loadingStatus: null,
   }
 
   prefetchCache.set(prefetchCacheKey, prefetchEntry)
@@ -199,14 +193,12 @@ function createLazyPrefetchEntry({
   nextUrl,
   buildId,
   prefetchCache,
-  isRenewal,
 }: Pick<
   ReadonlyReducerState,
   'nextUrl' | 'tree' | 'buildId' | 'prefetchCache'
 > & {
   url: URL
   kind: PrefetchKind
-  isRenewal?: boolean
 }): PrefetchCacheEntry {
   const prefetchCacheKey = createPrefetchCacheKey(url)
 
@@ -234,10 +226,8 @@ function createLazyPrefetchEntry({
     kind,
     prefetchTime: Date.now(),
     lastUsedTime: null,
-    renewalTime: isRenewal ? Date.now() : null,
     key: prefetchCacheKey,
     status: PrefetchCacheEntryStatus.fresh,
-    loadingStatus: PrefetchCacheEntryStatus.fresh,
   }
 
   prefetchCache.set(prefetchCacheKey, prefetchEntry)
@@ -262,24 +252,6 @@ const FIVE_MINUTES = 5 * 60 * 1000
 const THIRTY_SECONDS = 30 * 1000
 
 /**
- * This function is used to determine the cache status of the loading state of a prefetch cache entry.
- */
-function getLoadingCacheStatus(time: number | null) {
-  // a null value here means the time entry hasn't yet been renewed
-  // therefore we assume it's fresh
-  if (!time) {
-    return PrefetchCacheEntryStatus.fresh
-  }
-
-  // once renewed, the loading state can be reused for up to 5 minutes
-  if (Date.now() < time + FIVE_MINUTES) {
-    return PrefetchCacheEntryStatus.reusable
-  }
-
-  return PrefetchCacheEntryStatus.expired
-}
-
-/**
  * This function is used to determine the cache status of the data of a prefetch cache entry.
  */
 function getPrefetchEntryCacheStatus({
@@ -294,7 +266,7 @@ function getPrefetchEntryCacheStatus({
       : PrefetchCacheEntryStatus.fresh
   }
 
-  // if the cache entry was prefetched greater than 30s ago but less than 5 mins ago, then it's stale
+  // if the cache entry was prefetched less than 5 mins ago, then we want to re-use only the loading state
   if (kind === 'auto') {
     if (Date.now() < prefetchTime + FIVE_MINUTES) {
       return PrefetchCacheEntryStatus.stale

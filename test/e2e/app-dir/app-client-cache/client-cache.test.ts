@@ -430,7 +430,9 @@ createNextDescribe(
             .waitForElementByCss('#random-number')
             .text()
 
-          expect(newLoadingNumber).not.toBe(randomLoadingNumber)
+          // We don't currently expire the loading state for a cache node. Doing data fetching in a loading boundary seems unlikely to be worth
+          // additional complexity, and can still be implemented in the app via a `Suspense` boundary around a data fetch if desired.
+          expect(newLoadingNumber).toBe(randomLoadingNumber)
 
           expect(newNumber).not.toBe(randomNumber)
         })

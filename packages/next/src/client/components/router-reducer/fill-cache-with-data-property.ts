@@ -67,7 +67,6 @@ export function fillCacheWithDataProperty(
       lazyData: childCacheNode.lazyData,
       rsc: childCacheNode.rsc,
       prefetchRsc: childCacheNode.prefetchRsc,
-      loading: childCacheNode.loading,
       parallelRoutes: new Map(childCacheNode.parallelRoutes),
       loading: childCacheNode.loading,
     } as CacheNode

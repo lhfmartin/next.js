@@ -204,10 +204,8 @@ export type PrefetchCacheEntry = {
   kind: PrefetchKind
   prefetchTime: number
   lastUsedTime: number | null
-  renewalTime: number | null
   key: string
   status: PrefetchCacheEntryStatus
-  loadingStatus: PrefetchCacheEntryStatus | null
 }
 
 export enum PrefetchCacheEntryStatus {

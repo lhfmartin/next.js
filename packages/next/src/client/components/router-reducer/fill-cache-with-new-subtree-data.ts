@@ -6,10 +6,7 @@ import type {
 import { invalidateCacheByRouterState } from './invalidate-cache-by-router-state'
 import { fillLazyItemsTillLeafWithHead } from './fill-lazy-items-till-leaf-with-head'
 import { createRouterCacheKey } from './create-router-cache-key'
-import {
-  PrefetchCacheEntryStatus,
-  type PrefetchCacheEntry,
-} from './router-reducer-types'
+import type { PrefetchCacheEntry } from './router-reducer-types'
 
 /**
  * Fill cache with rsc based on flightDataPath
@@ -52,18 +49,15 @@ export function fillCacheWithNewSubTreeData(
       const seedData: CacheNodeSeedData = flightDataPath[3]
       const rsc = seedData[2]
       const loading = seedData[3]
-      const canReuseLoadingState =
-        prefetchEntry?.loadingStatus === PrefetchCacheEntryStatus.reusable
 
       childCacheNode = {
         lazyData: null,
         rsc,
         prefetchRsc: null,
-        // Preserve the existing loading node if it exists & is reusable
-        loading:
-          canReuseLoadingState && existingChildCacheNode?.loading
-            ? existingChildCacheNode.loading
-            : loading,
+        // Preserve the existing loading node if it exists.
+        loading: existingChildCacheNode?.loading
+          ? existingChildCacheNode.loading
+          : loading,
         // Ensure segments other than the one we got data for are preserved.
         parallelRoutes: existingChildCacheNode
           ? new Map(existingChildCacheNode.parallelRoutes)
