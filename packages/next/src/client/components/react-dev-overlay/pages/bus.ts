@@ -66,6 +66,7 @@ function drain() {
 }
 
 export function emit(ev: BusEvent): void {
+  console.log('Bus.emit', ev)
   queue.push(Object.freeze({ ...ev }))
   drain()
 }

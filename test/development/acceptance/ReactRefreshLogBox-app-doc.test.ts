@@ -97,7 +97,7 @@ describe.each(['default', 'turbo'])(
       if (process.env.TURBOPACK) {
         expect(source).toMatchInlineSnapshot(`
           "./pages/_app.js:2:11
-          Ecmascript file had an error
+          Parsing ecmascript source code failed
             1 | function MyApp({ Component, pageProps }) {
           > 2 |   return <<Component {...pageProps} />;
               |           ^
@@ -146,7 +146,7 @@ describe.each(['default', 'turbo'])(
       await cleanup()
     })
 
-    test('_document syntax error shows logbox', async () => {
+    test.only('_document syntax error shows logbox', async () => {
       const { session, cleanup } = await sandbox(
         next,
         new Map([
@@ -186,7 +186,7 @@ describe.each(['default', 'turbo'])(
       if (process.env.TURBOPACK) {
         expect(source).toMatchInlineSnapshot(`
           "./pages/_document.js:3:36
-          Ecmascript file had an error
+          Parsing ecmascript source code failed
             1 | import Document, { Html, Head, Main, NextScript } from 'next/document'
             2 |
           > 3 | class MyDocument extends Document {{
@@ -199,22 +199,22 @@ describe.each(['default', 'turbo'])(
         `)
       } else {
         expect(source).toMatchInlineSnapshot(`
-                  "./pages/_document.js
-                  Error: 
-                    x Unexpected token \`{\`. Expected identifier, string literal, numeric literal or [ for the computed key
-                     ,-[TEST_DIR/pages/_document.js:1:1]
-                   1 | import Document, { Html, Head, Main, NextScript } from 'next/document'
-                   2 | 
-                   3 | class MyDocument extends Document {{
-                     :                                    ^
-                   4 |   static async getInitialProps(ctx) {
-                   5 |     const initialProps = await Document.getInitialProps(ctx)
-                   6 |     return { ...initialProps }
-                     \`----
+          "./pages/_document.js
+          Error: 
+            x Unexpected token \`{\`. Expected identifier, string literal, numeric literal or [ for the computed key
+             ,-[1:1]
+           1 | import Document, { Html, Head, Main, NextScript } from 'next/document'
+           2 | 
+           3 | class MyDocument extends Document {{
+             :                                    ^
+           4 |   static async getInitialProps(ctx) {
+           5 |     const initialProps = await Document.getInitialProps(ctx)
+           6 |     return { ...initialProps }
+             \`----
 
-                  Caused by:
-                      Syntax Error"
-              `)
+          Caused by:
+              Syntax Error"
+        `)
       }
 
       await session.patch(

@@ -595,6 +595,7 @@ pub fn project_hmr_events(
                         issues,
                         diagnostics,
                     } = &*update;
+                    dbg!(&*update, &*issues);
                     match &**update {
                         Update::None => {}
                         Update::Total(TotalUpdate { to }) => {

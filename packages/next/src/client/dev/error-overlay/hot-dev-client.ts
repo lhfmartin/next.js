@@ -75,6 +75,7 @@ export default function connect(mode: 'webpack' | 'turbopack') {
   register()
 
   addMessageListener((payload) => {
+    console.log('HMR: payload', payload, new Error().stack)
     if (!('action' in payload)) {
       return
     }
