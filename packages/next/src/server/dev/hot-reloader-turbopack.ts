@@ -397,10 +397,6 @@ export async function createHotReloaderTurbopack(
             hash: '',
             warnings: [],
           })
-          //
-          sendToClient(client, {
-            action: HMR_ACTIONS_SENT_TO_BROWSER.RELOAD_PAGE,
-          })
         }
 
         if (data.type !== 'issues') {
