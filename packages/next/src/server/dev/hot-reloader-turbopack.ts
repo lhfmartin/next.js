@@ -633,7 +633,6 @@ export async function createHotReloaderTurbopack(
 
         const errors: CompilationError[] = []
 
-        console.log('currentEntryIssues', currentEntryIssues)
         for (const entryIssues of currentEntryIssues.values()) {
           for (const issue of entryIssues.values()) {
             errors.push({
@@ -684,15 +683,6 @@ export async function createHotReloaderTurbopack(
         currentEntryIssues.get(appEntryKey) ??
         currentEntryIssues.get(pagesEntryKey)
 
-      console.log(
-        'getCompilationErrors 1',
-        appEntryKey,
-        pagesEntryKey,
-        currentEntryIssues,
-        Array.from(topLevelIssues),
-        'separator',
-        thisEntryIssues
-      )
       if (thisEntryIssues !== undefined && thisEntryIssues.size > 0) {
         // If there is an error related to the requesting page we display it instead of the first error
         return [...topLevelIssues, ...thisEntryIssues.values()].map(
@@ -705,19 +695,11 @@ export async function createHotReloaderTurbopack(
       for (const issue of topLevelIssues) {
         errors.push(new Error(formatIssue(issue)))
       }
-      for (const [key, entryIssues] of currentEntryIssues.entries()) {
-        if (
-          key === getEntryKey('app', 'server', '_error') ||
-          key === getEntryKey('pages', 'server', '_error')
-        ) {
-          continue
-        }
-
+      for (const entryIssues of currentEntryIssues.values()) {
         for (const issue of entryIssues.values()) {
           errors.push(new Error(formatIssue(issue)))
         }
       }
-      console.log('getCompilationErrors 2', currentEntryIssues, errors)
       return errors
     },
     async invalidate({

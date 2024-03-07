@@ -75,7 +75,6 @@ export default function connect(mode: 'webpack' | 'turbopack') {
   register()
 
   addMessageListener((payload) => {
-    console.log('HMR: payload', payload, new Error().stack)
     if (!('action' in payload)) {
       return
     }
@@ -285,7 +284,6 @@ function processMessage(obj: HMR_ACTION_TYPES) {
       if ('versionInfo' in obj) onVersionInfo(obj.versionInfo)
 
       const hasErrors = Boolean(errors && errors.length)
-      console.log('hasErrors', hasErrors, errors)
       if (hasErrors) {
         sendMessage(
           JSON.stringify({
@@ -298,7 +296,6 @@ function processMessage(obj: HMR_ACTION_TYPES) {
       }
 
       const hasWarnings = Boolean(warnings && warnings.length)
-      console.log('hasWarnings', hasWarnings, warnings)
       if (hasWarnings) {
         sendMessage(
           JSON.stringify({
