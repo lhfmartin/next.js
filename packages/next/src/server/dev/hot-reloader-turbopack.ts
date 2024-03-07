@@ -387,7 +387,6 @@ export async function createHotReloaderTurbopack(
       await subscription.next()
 
       for await (const data of subscription) {
-        console.log('subscribeToHmrEvents', data)
         processIssues(state.clientIssues, key, data)
 
         if (data.issues.length === 0) {
