@@ -199,22 +199,21 @@ describe.each(['default', 'turbo'])(
         `)
       } else {
         expect(source).toMatchInlineSnapshot(`
-          "./pages/_document.js
-          Error: 
-            x Unexpected token \`{\`. Expected identifier, string literal, numeric literal or [ for the computed key
-             ,-[1:1]
-           1 | import Document, { Html, Head, Main, NextScript } from 'next/document'
-           2 | 
-           3 | class MyDocument extends Document {{
-             :                                    ^
-           4 |   static async getInitialProps(ctx) {
-           5 |     const initialProps = await Document.getInitialProps(ctx)
-           6 |     return { ...initialProps }
-             \`----
-
-          Caused by:
-              Syntax Error"
-        `)
+        "./pages/_document.js
+        Error: 
+          x Unexpected token \`{\`. Expected identifier, string literal, numeric literal or [ for the computed key
+           ,-[TEST_DIR/pages/_document.js:1:1]
+         1 | import Document, { Html, Head, Main, NextScript } from 'next/document'
+         2 | 
+         3 | class MyDocument extends Document {{
+           :                                    ^
+         4 |   static async getInitialProps(ctx) {
+         5 |     const initialProps = await Document.getInitialProps(ctx)
+         6 |     return { ...initialProps }
+           \`----
+        Caused by:
+            Syntax Error"
+    `)
       }
 
       await session.patch(
